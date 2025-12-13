@@ -1,0 +1,51 @@
+<div id="loginModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
+        <h2>Login</h2>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            <div class="input-group email">
+                <input type="email" id="loginEmail" placeholder="Email" name="email" required>
+            </div>
+            <div class="input-group password">
+                <input type="password" id="loginPassword" placeholder="Password" name="password" required>
+            </div>
+            <div class="meta-links">
+                <div>
+                    <input type="checkbox" id="remember">
+                    <label for="remember" style="margin-left: 5px;">Remember me</label>
+                </div>
+                <a href="#">Forgot Password?</a>
+            </div>
+            <button type="submit" class="btn-submit">Login</button>
+        </form>
+        <div class="switch-form-link">
+            Don't have an account? <a onclick="switchToRegister()">Register</a>
+        </div>
+    </div>
+</div>
+
+<div id="registerModal" class="modal-overlay" onclick="closeModal(event)">
+    <div class="modal-content">
+        <span class="close-btn" onclick="closeRegisterModal()">&times;</span>
+        <h2>Registration</h2>
+        <form id="registrationForm" onsubmit="handleRegistration(event)">
+             <div class="input-group username">
+                <input type="text" id="regUsername" placeholder="Username" name="username" required>
+            </div>
+            <div class="input-group email">
+                <input type="email" id="regEmail" placeholder="Email" name="email" required>
+            </div>
+            <div class="input-group password">
+                <input type="password" id="regPassword" placeholder="Password" name="password" required>
+            </div>
+            <div class="meta-links" style="justify-content: flex-start;">
+                <input type="checkbox" id="terms" required>
+                <label for="terms" style="margin-left: 5px;">I agree to the terms & conditions</label>
+            </div>
+            <button type="submit" class="btn-submit">Register</button>
+        </form>
+        <div class="switch-form-link">
+            Already have an account? <a onclick="switchToLogin()">Login</a>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,6 @@
+# Bỏ qua các file nhạy cảm
+.env
+__pycache__
+*.pyc
+# Bỏ qua Database cục bộ nếu bạn đã dùng SQLite trước đó
+*.db

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Xóm Nhà Lá</title>
+    <style>
+        /* --- CSS cho kiểu dáng --- */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+
+        /* Vùng thanh điều hướng chính */
+        .navbar {
+            background-color: #262626; /* Màu nền đen sẫm */
+            color: white;
+            padding: 0 40px;
+            display: flex;
+            justify-content: flex-start;
+            align-items: center;
+            height: 60px; /* Chiều cao cố định */
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        /* Logo */
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #ff9900; /* Màu cam nổi bật */
+            margin-right: 40px;
+            text-decoration: none;
+            line-height: 1; /* Căn chỉnh logo tốt hơn */
+            padding-top: 5px;
+        }
+
+        .logo small {
+            font-size: 8px;
+            font-weight: normal;
+            color: #aaa;
+            display: block; /* Đưa dòng chữ nhỏ xuống dòng mới */
+        }
+
+        /* Menu chính (Các liên kết) */
+        .nav-links {
+            display: flex;
+            list-style: none;
+            padding: 0;
+            margin: 0;
+            flex-grow: 1; /* Cho phép list chiếm hết không gian còn lại */
+            align-items: center;
+        }
+
+        /* Mục trong menu */
+        .nav-item {
+            position: relative;
+            padding: 0 12px;
+            height: 60px;
+            display: flex;
+            align-items: center;
+            cursor: pointer;
+        }
+
+        .nav-item a {
+            color: #ccc; /* Màu chữ mặc định hơi xám */
+            text-decoration: none;
+            font-size: 14px;
+            white-space: nowrap;
+        }
+
+        .nav-item:hover {
+            background-color: #383838; /* Đổi màu khi di chuột */
+        }
+        
+        .nav-item:hover a {
+            color: white; /* Đổi màu chữ sang trắng khi hover */
+        }
+
+        /* Ký hiệu mũi tên xuống cho dropdown */
+        .dropdown-arrow::after {
+            content: '▼';
+            font-size: 8px;
+            margin-left: 5px;
+            vertical-align: middle;
+            transition: transform 0.3s;
+            color: inherit; /* Kế thừa màu chữ */
+        }
+
+        /* Menu thả xuống */
+        .dropdown-menu {
+            display: none; /* Ẩn mặc định */
+            position: absolute;
+            top: 100%;
+            left: 0;
+            background-color: #383838;
+            min-width: 180px;
+            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.5);
+            z-index: 10;
+            padding: 10px 0;
+            border-radius: 4px;
+        }
+
+        .dropdown-menu a {
+            color: white;
+            padding: 10px 20px;
+            text-decoration: none;
+            display: block;
+            text-align: left;
+            font-size: 14px;
+        }
+
+        .dropdown-menu a:hover {
+            background-color: #4a4a4a;
+        }
+
+        /* Hiện menu thả xuống khi di chuột */
+        .nav-item:hover .dropdown-menu {
+            display: block;
+        }
+
+        /* --- Nút Đăng nhập/Đăng ký --- */
+        .auth-buttons {
+            display: flex;
+            align-items: center;
+            margin-left: 20px; /* Tạo khoảng cách giữa menu và nút */
+        }
+
+        .auth-button {
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 20px;
+            margin-left: 10px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background-color 0.3s, color 0.3s;
+            white-space: nowrap;
+            position: relative; /* Quan trọng cho dropdown của nút Đăng nhập */
+        }
+
+        .btn-login {
+            background-color: #ff8c00; /* Màu cam đậm nổi bật */
+            color: white;
+            
+        }
+
+        .btn-login:hover {
+            background-color: #e67e00;
+        }
+
+        .btn-register {
+            background-color: transparent;
+            color: #ff9900;
+            border: 1px solid transparent; /* Tạo đường viền giả để giữ kích thước */
+        }
+
+        .btn-register:hover {
+            color: white;
+            background-color: #383838;
+        }
+
+        /* Điều chỉnh dropdown cho nút Đăng nhập */
+        .auth-buttons .dropdown-menu {
+            right: 0; /* Đặt menu con căn theo mép phải của nút cha */
+            left: auto;
+            min-width: 150px;
+        }
+
+        /* Vùng nội dung để dễ hình dung */
+        .content {
+            padding: 40px;
+            color: #333;
+        }
+    </style>
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#" class="logo">
+            Nhà Lá
+            <small>SIEULAYLOI</small>
+        </a>
+
+        <ul class="nav-links">
+            <li class="nav-item dropdown-arrow">
+                <a href="#">Tổng quan</a>
+                <div class="dropdown-menu">
+                    <a href="https://example.com/chuong-trinh-1">Môi trường</a>
+                    <a href="https://example.com/chuong-trinh-2">Độ uy tín</a>
+                </div>
+            </li>
+            <li class="nav-item">
+                <a href="https://example.com/giao-vien">THPT Đại An</a>
+            </li>
+            <li class="nav-item">
+                <a href="https://example.com/cau-chuyen-tien-bo">Giáo viên</a>
+            </li>
+            <li class="nav-item dropdown-arrow">
+                <a href="#">11B1</a>
+                 <div class="dropdown-menu">
+                    <a href="https://example.com/gioi-thieu">Thanh xuân rực rỡ</a>
+                    <a href="https://example.com/tuyen-dung">Lời gửi</a>
+                </div>
+            </li>
+            <li class="nav-item dropdown-arrow">
+                <a href="#">Lưu giữ kí ức</a>
+                <div class="dropdown-menu">
+                    <a href="https://example.com/video-huong-dan">Video 11B1</a>
+                    <a href="https://example.com/faq">Video của bạn</a>
+                </div>
+            </li>
+        </ul>
+        
+    </header>
+
+    
+</body>
+</html>

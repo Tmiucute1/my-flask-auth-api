@@ -1,0 +1,8 @@
+Plaintext
+
+Flask
+pymongo
+werkzeug
+python-dotenv
+gunicorn
+flask-cors
