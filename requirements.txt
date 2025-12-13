@@ -6,4 +6,3 @@ werkzeug
 python-dotenv
 gunicorn
 flask-cors
-... (các thư viện khác)
