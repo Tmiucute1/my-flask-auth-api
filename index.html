@@ -311,7 +311,7 @@
                 return;
             }
             // --- BẮT ĐẦU: CODE GỌI API ĐĂNG KÝ MỚI ---
-fetch('https://my-flask-auth-api-7.onrender.com/api/register', {
+fetch('https://my-flask-auth-api-10.onrender.com/api/register', {
     method: 'POST',
     headers: {
         'Content-Type': 'application/json',
@@ -324,7 +324,7 @@ fetch('https://my-flask-auth-api-7.onrender.com/api/register', {
         // Xử lý thành công
         alert(`Đăng ký thành công: ${username}. Sẽ chuyển hướng đến trang của bạn.`);
         // Chuyển hướng thành công (Sử dụng URL đích của bạn)
-        window.location.href = "file:///C:/Users/Admin/Downloads/TSK20RecommendedApps/BTT2.html"; 
+        window.location.href = "BTT2.html";
     } else {
         // Xử lý thất bại (Lỗi Email/Username đã tồn tại)
         alert(`Đăng ký thất bại: ${data.message}`);
@@ -343,11 +343,10 @@ fetch('https://my-flask-auth-api-10.onrender.com/api/login', {
     if (data.message === "Đăng nhập thành công") {
         // Xử lý thành công
         alert(`Đăng nhập thành công với email: ${email}. Sẽ chuyển hướng đến trang của bạn.`);
-        
         // Chuyển hướng thành công
-        window.location.href = "file:///C:/Users/Admin/Downloads/TSK20RecommendedApps/BTT2.html"; 
+        window.location.href = "BTT2.html";
+        // Xử lý thất bại 
     } else {
-        // Xử lý thất bại
         alert(`Đăng nhập thất bại: ${data.message}`);
     }
 })
