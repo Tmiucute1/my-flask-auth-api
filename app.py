@@ -23,10 +23,12 @@ except Exception as e:
     # Báo lỗi nếu không kết nối được (thường xảy ra nếu chuỗi MONGO_URI sai)
     print(f"LỖI KẾT NỐI MONGODB: Vui lòng kiểm tra lại MONGO_URI trong Render: {e}")
 
-# --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
+        return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}), 401
+    # --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
 @app.route('/api/register', methods=['POST'])
 def register():
-    data = request.get_json(force=True) # Đảm bảo nhận JSON an toàn
+    # Sửa lỗi JSON: Đảm bảo nhận JSON an toàn
+    data = request.get_json(force=True) 
 
     username = data.get('username')
     email = data.get('email')
@@ -35,9 +37,9 @@ def register():
     if not username or not email or not password:
         return jsonify({"message": "Thiếu thông tin Đăng ký (username, email, password)."}), 400
 
-    # Kiểm tra tồn tại
+    # Sửa lỗi IndentationError và Lỗi truy vấn MongoDB ($or)
     if users_collection.find_one({'$or': [{'email': email}, {'username': username}]}):
-        # DÒNG NÀY ĐÃ ĐƯỢC THỤT ĐẦU DÒNG CHÍNH XÁC
+        # Dòng return này PHẢI được thụt vào chính xác
         return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
 
     # Mã hóa mật khẩu
@@ -47,21 +49,22 @@ def register():
         "username": username,
         "email": email,
         "password_hash": hashed_password,
-        "created_at": datetime.now() # Sử dụng datetime.now() an toàn hơn
+        # Sửa lỗi datetime: dùng datetime.now() an toàn
+        "created_at": datetime.now() 
     }
 
     try:
         users_collection.insert_one(new_user)
         return jsonify({"message": "Đăng ký thành công!"}), 201
     except Exception as e:
-        # BÁO LỖI SERVER TRONG LOGS ĐỂ DỄ DÀNG GỠ LỖI
+        # Báo lỗi để dễ dàng gỡ lỗi
         print(f"LỖI SERVER KHI INSERT: {e}")
         return jsonify({"message": f"Lỗi Server: {str(e)}"}), 500
 
 # --- 3. ĐIỂM CUỐI API: ĐĂNG NHẬP (LOGIN) ---
 @app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json(force=True) # Đảm bảo nhận JSON an toàn
+    data = request.get_json(force=True)
     email = data.get('email')
     password = data.get('password')
 
@@ -78,6 +81,19 @@ def login():
         }), 200
     else:
         return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}), 401
+      route('/api/register', methods=['POST'])
+def register
+
+    user = users_collection.find_one({"email": email})
+
+    # Xác thực mật khẩu
+    if user and check_password_hash(user['password_hash'], password):
+        return jsonify({
+            "message": "Đăng nhập thành công!",
+            "username": user['username']
+        }), 200
+    else:
+
 
 # --- 4. CHẠY ỨNG DỤNG ---
 if __name__ == '__main__':
