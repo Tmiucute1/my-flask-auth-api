@@ -15,18 +15,17 @@ CORS(app, resources={r"/api/*": {"origins": FRONTEND_URL}})
 # Lấy các biến từ môi trường (RENDER sẽ cung cấp, hoặc tự setup .env nếu chạy cục bộ)
 app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
-
+mongo_client_status = True # (DÒNG MỚI ĐƯỢC THÊM)
 # Kết nối với MongoDB Atlas
 try:
     client = MongoClient(app.config['MONGO_URI'])
-    # SỬA LỖI: Đảm bảo tên database chính xác
-    db = client.get_database('UserAuthDB') # Thay thế UserAuthDB bằng tên database của bạn nếu khác
+    db = client.get_database('UserAuthDB') 
     users_collection = db['users']
 except Exception as e:
     # Báo lỗi nếu không kết nối được (thường xảy ra nếu chuỗi MONGO_URI sai)
-    print(f"LỖI KẾT NỐI MONGO_DB: Vui lòng kiểm tra lại MONGO_URI trong Render: {e}")
-    # Không cần trả về jsonify ở đây vì đây là lỗi khởi tạo, không phải lỗi API
-
+    print(f"LỖI KẾT NỐI MONGODB: {e}") 
+    mongo_client_status = False # (DÒNG MỚI ĐƯỢC THÊM)
+# KHÔNG CÓ DÒNG CODE NÀO Ở ĐÂY NỮA
 # --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
 @app.route('/api/register', methods=['POST'])
 def register():
