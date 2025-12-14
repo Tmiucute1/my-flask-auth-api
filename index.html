@@ -363,7 +363,6 @@ fetch('https://my-flask-auth-api-7.onrender.com/api/login', {
             alert(`Tạo tài khoản thành công cho: ${username}. Sẽ chuyển hướng đến trang của bạn.`);
             window.location.href = targetUrl;
         }
-
         // HÀM XỬ LÝ ĐĂNG NHẬP
         window.handleLogin = function(event) {
             event.preventDefault(); 
@@ -375,32 +374,33 @@ fetch('https://my-flask-auth-api-7.onrender.com/api/login', {
                 alert('Vui lòng điền đầy đủ email và mật khẩu!');
                 return;
             }
-// --- BẮT ĐẦU: CODE GỌI API ĐĂNG NHẬP MỚI (CHÈN SAU DÒNG 377) ---
-fetch('https://my-flask-auth-api-7.onrender.com/api/login', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
-})
-.then(response => response.json())
-.then(data => {
-    if (data.message === "Đăng nhập thành công") {
-        // Xử lý thành công
-        alert(`Đăng nhập thành công với email: ${email}. Sẽ chuyển hướng đến trang của bạn.`);
+    // --- BẮT ĐẦU: CODE GỌI API ĐĂNG NHẬP MỚI (CHÈN SAU DÒNG 377) ---
+    fetch('https://my-flask-auth-api-7.onrender.com/api/login', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+    })
+        .then(response => response.json())
+        .then(data => {
+            if (data.message === "Đăng nhập thành công") {
+               // Xử lý thành công
+            alert(`Đăng nhập thành công với email: ${email}. Sẽ chuyển hướng đến trang của bạn.`);
         
-        // Chuyển hướng thành công (Dùng URL đích của bạn)
-        window.location.href = "file:///C:/Users/Admin/Downloads/TSK20RecommendedApps/BTT2.html"; 
-    } else {
-        // Xử lý thất bại
-        alert(`Đăng nhập thất bại: ${data.message}`);
-    }
-})
-.catch(error => {
-    alert('Lỗi kết nối với máy chủ API. Vui lòng kiểm tra lại.');
-    console.error('Lỗi:', error);
-});
-// --- KẾT THÚC: CODE GỌI API ĐĂNG NHẬP MỚI ---
+            // Chuyển hướng thành công (Dùng URL đích của bạn)
+            window.location.href = "file:///C:/Users/Admin/Downloads/TSK20RecommendedApps/BTT2.html"; 
+        } else {
+            // Xử lý thất bại
+            alert(`Đăng nhập thất bại: ${data.message}`);
+          }
+       })
+         .catch(error => {
+         alert('Lỗi kết nối với máy chủ API. Vui lòng kiểm tra lại.');
+         console.error('Lỗi:', error);
+        });
+    };
+    // --- KẾT THÚC: CODE GỌI API ĐĂNG NHẬP MỚI ---
     </script>
     
 <div id="loginModal" class="modal-overlay" onclick="closeModal(event)">
