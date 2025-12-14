@@ -36,8 +36,9 @@ def register():
         return jsonify({"message": "Thiếu thông tin Đăng ký (username, email, password)."}), 400
 
     # Kiểm tra tồn tại
-    if users_collection.find_one({'$or': [{'email': email}, {'username': username}]}): 
-    return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
+    if users_collection.find_one({'$or': [{'email': email}, {'username': username}]}):
+        # DÒNG NÀY ĐÃ ĐƯỢC THỤT ĐẦU DÒNG CHÍNH XÁC
+        return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
 
     # Mã hóa mật khẩu 
     hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
