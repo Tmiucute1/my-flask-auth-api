@@ -27,7 +27,7 @@ except Exception as e:
 # --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
 @app.route('/api/register', methods=['POST'])
 def register():
-    data = request.get_json()
+    data = request.get_json(force=True) # Thêm force=True để đảm bảo nhận JSON
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
@@ -36,8 +36,8 @@ def register():
         return jsonify({"message": "Thiếu thông tin Đăng ký (username, email, password)."}), 400
 
     # Kiểm tra tồn tại
-    if users_collection.find_one({"$or": [{"email": email}, {"username": username}]}):
-        return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
+    if users_collection.find_one({'$or': [{'email': email}, {'username': username}]}): 
+    return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
 
     # Mã hóa mật khẩu 
     hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
@@ -46,7 +46,7 @@ def register():
         "username": username,
         "email": email,
         "password_hash": hashed_password,
-        "created_at": datetime.utcnow()
+        "created_at": datetime.now()
     }
 
     try:
