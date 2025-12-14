@@ -23,11 +23,11 @@ except Exception as e:
     # Báo lỗi nếu không kết nối được (thường xảy ra nếu chuỗi MONGO_URI sai)
     print(f"LỖI KẾT NỐI MONGODB: Vui lòng kiểm tra lại MONGO_URI trong Render: {e}")
 
-
 # --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
 @app.route('/api/register', methods=['POST'])
 def register():
-    data = request.get_json(force=True) # Thêm force=True để đảm bảo nhận JSON
+    data = request.get_json(force=True) # Đảm bảo nhận JSON an toàn
+
     username = data.get('username')
     email = data.get('email')
     password = data.get('password')
@@ -40,27 +40,28 @@ def register():
         # DÒNG NÀY ĐÃ ĐƯỢC THỤT ĐẦU DÒNG CHÍNH XÁC
         return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
 
-    # Mã hóa mật khẩu 
+    # Mã hóa mật khẩu
     hashed_password = generate_password_hash(password, method='pbkdf2:sha256')
 
     new_user = {
         "username": username,
         "email": email,
         "password_hash": hashed_password,
-        "created_at": datetime.now()
+        "created_at": datetime.now() # Sử dụng datetime.now() an toàn hơn
     }
 
     try:
         users_collection.insert_one(new_user)
         return jsonify({"message": "Đăng ký thành công!"}), 201
     except Exception as e:
+        # BÁO LỖI SERVER TRONG LOGS ĐỂ DỄ DÀNG GỠ LỖI
+        print(f"LỖI SERVER KHI INSERT: {e}")
         return jsonify({"message": f"Lỗi Server: {str(e)}"}), 500
-
 
 # --- 3. ĐIỂM CUỐI API: ĐĂNG NHẬP (LOGIN) ---
 @app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json()
+    data = request.get_json(force=True) # Đảm bảo nhận JSON an toàn
     email = data.get('email')
     password = data.get('password')
 
@@ -77,7 +78,6 @@ def login():
         }), 200
     else:
         return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}), 401
-
 
 # --- 4. CHẠY ỨNG DỤNG ---
 if __name__ == '__main__':
