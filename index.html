@@ -298,64 +298,59 @@
         
         // --- CÁC HÀM XỬ LÝ FORM (Mô phỏng Đăng nhập/Đăng ký) ---
         
-        // HÀM XỬ LÝ ĐĂNG KÝ (Mô phỏng tạo tài khoản)
-        window.handleRegistration = function(event) {
-            event.preventDefault(); 
-            
-            const username = document.getElementById('regUsername').value;
-            const email = document.getElementById('regEmail').value;
-            const password = document.getElementById('regPassword').value;
+        // DÒNG 301: HÀM XỬ LÝ ĐĂNG KÝ 
+window.handleRegistration = function(event) {
+    event.preventDefault();
 
-            if (password.length < 6) {
-                alert('Đăng ký thất bại: Mật khẩu phải có ít nhất 6 ký tự!');
-                return;
-            }
+    const username = document.getElementById('regUsername').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+
+    // >>> CODE SỬA LỖI: KIỂM TRA TRƯỜNG TRỐNG <<<
+    if (!username || !email || !password) {
+        alert("Vui lòng điền đầy đủ Tên người dùng, Email và Mật khẩu!");
+        return; // Dừng hàm, không gửi yêu cầu API
+    }
+    // >>> KẾT THÚC CODE SỬA LỖI <<<
+    
+    if (password.length < 6) { // Giữ nguyên kiểm tra độ dài
+        alert('Đăng ký thất bại: Mật khẩu phải có ít nhất 6 ký tự!');
+        return;
+    }
             // --- BẮT ĐẦU: CODE GỌI API ĐĂNG KÝ MỚI ---
-fetch('https://my-flask-auth-api-11.onrender.com/api/register', {
-    method: 'POST',
+ method: 'POST',
     headers: {
-        'Content-Type': 'application/json',
+        'Content-Type': 'application/json'
     },
     body: JSON.stringify({ username, email, password }),
-})
-.then(response => response.json())
-.then(data => {
-    if (data.message === "Đăng ký thành công") {
-        // Xử lý thành công
-        alert(`Đăng ký thành công: ${username}. Sẽ chuyển hướng đến trang của bạn.`);
-        // Chuyển hướng thành công (Sử dụng URL đích của bạn)
-        window.location.href = "BTT2.html";
+}
+.then((response) => {
+    // Kiểm tra mã trạng thái HTTP trước
+    if (response.ok) {
+        // Xử lý khi Status là 200/201 (Thành công)
+        return response.json();
     } else {
-        // Xử lý thất bại (Lỗi Email/Username đã tồn tại)
-        alert(`Đăng ký thất bại: ${data.message}`);
-    }
+        // Xử lý khi Status là 400, 409, 401 (Lỗi)
+        return response.json().then((errorData) => {
+            // Dữ liệu lỗi được trả về từ Backend (errorData.message)
+            throw new Error(errorData.message || "Lỗi không xác định từ máy chủ.");
+        });
+    } // <<< Dấu ngoặc nhọn đóng bị thiếu đã được thêm vào đây
 })
-// --- BẮT ĐẦU: CODE GỌI API ĐĂNG NHẬP MỚI (CHÈN VÀO ĐÂY) ---
-fetch('https://my-flask-auth-api-11.onrender.com/api/login', {
-    method: 'POST',
-    headers: {
-        'Content-Type': 'application/json',
-    },
-    body: JSON.stringify({ email, password }),
+.then((data) => {
+    // Xử lý khi thành công (Status 201)
+    alert("Đăng ký thành công!");
+    // Chuyển hướng thành công
+    window.location.href = "BTT2.html";
 })
-.then(response => response.json())
-.then(data => {
-    if (data.message === "Đăng nhập thành công") {
-        // Xử lý thành công
-        alert(`Đăng nhập thành công với email: ${email}. Sẽ chuyển hướng đến trang của bạn.`);
-        // Chuyển hướng thành công
-        window.location.href = "BTT2.html";
-        // Xử lý thất bại 
-    } else {
-        alert(`Đăng nhập thất bại: ${data.message}`);
-    }
-})
-.catch(error => {
-    alert('Lỗi kết nối với máy chủ API. Vui lòng kiểm tra lại.');
+.catch((error) => {
+    // Hiển thị lỗi từ Backend hoặc lỗi kết nối
+    alert("Đăng ký thất bại: " + error.message);
     console.error('Lỗi:', error);
-});
+}); 
+// DÒNG 351: // KẾT THÚC CODE GỌI API ĐĂNG KÝ
 // --- KẾT THÚC: CODE GỌI API ĐĂNG NHẬP MỚI ---
-        }
+        
         // HÀM XỬ LÝ ĐĂNG NHẬP
         window.handleLogin = function(event) {
             event.preventDefault(); 
@@ -366,47 +361,42 @@ fetch('https://my-flask-auth-api-11.onrender.com/api/login', {
             if (!email || !password) {
                 alert('Vui lòng điền đầy đủ email và mật khẩu!');
                 return;
-            }
-    // --- BẮT ĐẦU: CODE GỌI API ĐĂNG NHẬP MỚI (CHÈN SAU DÒNG 377) ---
-    fetch('https://my-flask-auth-api-11.onrender.com/api/login', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-    })
-        .then(response => response.json())
-        .then(data => {
-            if (data.message === "Đăng nhập thành công") {
-               // Xử lý thành công
-            alert(`Đăng nhập thành công với email: ${email}. Sẽ chuyển hướng đến trang của bạn.`);
-        
-            // Chuyển hướng thành công (Dùng URL đích của bạn)
-        window.location.href = "BTT2.html";
-            } else {
-            // Xử lý thất bại
-            alert(`Đăng nhập thất bại: ${data.message}`);
-          }
-       })
-         .catch(error => {
-         alert('Lỗi kết nối với máy chủ API. Vui lòng kiểm tra lại.');
-         console.error('Lỗi:', error);
+        }
+    =
+        // BẮT ĐẦU CODE GỌI API ĐĂNG NHẬP ĐÃ SỬA LỖI
+    method: 'POST',
+    headers: {
+        'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ email, password }),
+}
+.then((response) => {
+    if (response.ok) { // KIỂM TRA STATUS 200/201 (Thành công)
+        return response.json();
+    } else {
+        // Xử lý khi Status 401, 400 (Lỗi)
+        return response.json().then((errorData) => {
+            // PHẢI NÉM LỖI ĐỂ ĐẨY XUỐNG CATCH
+            throw new Error(errorData.message || "Lỗi không xác định từ máy chủ.");
         });
-    };
-    // --- KẾT THÚC: CODE GỌI API ĐĂNG NHẬP MỚI ---
-    </script>
+    } // <<< Dấu ngoặc nhọn đóng bị thiếu đã được thêm vào đây
+})
+.then((data) => {
+    // Xử lý khi thành công
+    alert(`Đăng nhập thành công với username: ${data.username}`);
+    window.location.href = "BTT2.html";
+})
+.catch((error) => {
+    // Hiển thị lỗi từ Backend hoặc lỗi kết nối
+    alert('Đăng nhập thất bại: ' + error.message);
+    console.error('Lỗi:', error);
+});
+// DÒNG 398: // KẾT THÚC CODE GỌI API ĐĂNG NHẬP
+        // Hiển thị lỗi từ Backend hoặc lỗi kết nối
+        alert('Đăng nhập thất bại: ' + error.message);
+        console.error('Lỗi:', error);
     
-<div id="loginModal" class="modal-overlay" onclick="closeModal(event)">
-    <div class="modal-content">
-        <span class="close-btn" onclick="closeLoginModal()">&times;</span>
-        <h2>Login</h2>
-        <form id="loginForm" onsubmit="handleLogin(event)">
-            <div class="input-group email">
-                <input type="email" id="loginEmail" placeholder="Email" name="email" required>
-            </div>
-            <div class="input-group password">
-                <input type="password" id="loginPassword" placeholder="Password" name="password" required>
-            </div>
+    // KẾT THÚC CODE GỌI API ĐĂNG NHẬP
             <div class="meta-links">
                 <div>
                     <input type="checkbox" id="remember">
@@ -416,6 +406,8 @@ fetch('https://my-flask-auth-api-11.onrender.com/api/login', {
             </div>
             <button type="submit" class="btn-submit">Login</button>
         </form>
+        <form id="loginForm" onsubmit="handleLogin(event)">
+            </form>
         <div class="switch-form-link">
             Don't have an account? <a onclick="switchToRegister()">Register</a>
         </div>
