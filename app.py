@@ -78,22 +78,21 @@ def login():
 
     email = data.get('email')
     password = data.get('password')
-
     if not email or not password:
-        return jsonify({"message": "Thiếu Email hoặc Mật khẩu."}), 400
+        return jsonify({"message": "Thiếu Email hoặc Mật khẩu."}, 400)
 
-    # LƯU Ý: Đã xóa lỗi code login bị lặp lại ở cuối file.
+    # 1. Tìm người dùng bằng email
     user = users_collection.find_one({"email": email})
 
-    # Xác thực mật khẩu
+    # 2. Xác thực mật khẩu
     if user and check_password_hash(user['password_hash'], password):
         return jsonify({
             "message": "Đăng nhập thành công!",
             "username": user['username']
         }), 200
     else:
-        return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}), 401
-
+        # Lỗi: Email không tồn tại hoặc Mật khẩu sai
+        return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}, 401)
 # --- 4. CHẠY ỨNG DỤNG ---
 if __name__ == '__main__':
     # Chỉ dùng cho test cục bộ. Khi deploy Render sẽ dùng gunicorn.
