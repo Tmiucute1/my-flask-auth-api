@@ -3,32 +3,39 @@ from pymongo import MongoClient
 from werkzeug.security import generate_password_hash, check_password_hash
 import os
 from datetime import datetime
-from flask_cors import CORS 
+from flask_cors import CORS
 
 # --- 1. CẤU HÌNH ỨNG DỤNG FLASK VÀ MONGODB ---
 app = Flask(__name__)
+
 # Cho phép các yêu cầu từ Frontend (chạy trên domain khác)
 FRONTEND_URL = "https://flask-login-ui.onrender.com"
 CORS(app, resources={r"/api/*": {"origins": FRONTEND_URL}})
-# Lấy các biến từ môi trường (RENDER sẽ cung cấp, hoặc từ .env nếu chạy cục bộ)
+
+# Lấy các biến từ môi trường (RENDER sẽ cung cấp, hoặc tự setup .env nếu chạy cục bộ)
 app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
 
 # Kết nối với MongoDB Atlas
 try:
     client = MongoClient(app.config['MONGO_URI'])
-    db = client.get_database('UserAuthDB') 
-    users_collection = db['users'] 
+    # SỬA LỖI: Đảm bảo tên database chính xác
+    db = client.get_database('UserAuthDB') # Thay thế UserAuthDB bằng tên database của bạn nếu khác
+    users_collection = db['users']
 except Exception as e:
     # Báo lỗi nếu không kết nối được (thường xảy ra nếu chuỗi MONGO_URI sai)
-    print(f"LỖI KẾT NỐI MONGODB: Vui lòng kiểm tra lại MONGO_URI trong Render: {e}")
+    print(f"LỖI KẾT NỐI MONGO_DB: Vui lòng kiểm tra lại MONGO_URI trong Render: {e}")
+    # Không cần trả về jsonify ở đây vì đây là lỗi khởi tạo, không phải lỗi API
 
-        return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}), 401
-    # --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
+# --- 2. ĐIỂM CUỐI API: ĐĂNG KÝ (REGISTER) ---
 @app.route('/api/register', methods=['POST'])
 def register():
-    # Sửa lỗi JSON: Đảm bảo nhận JSON an toàn
-    data = request.get_json(force=True) 
+    try:
+        # Sửa lỗi JSON: Đảm bảo nhận JSON an toàn
+        data = request.get_json(force=True) 
+    except Exception as e:
+        print(f"LỖI PHÂN TÍCH JSON: {e}")
+        return jsonify({"message": "Dữ liệu gửi lên không phải JSON hợp lệ."}), 400
 
     username = data.get('username')
     email = data.get('email')
@@ -37,9 +44,8 @@ def register():
     if not username or not email or not password:
         return jsonify({"message": "Thiếu thông tin Đăng ký (username, email, password)."}), 400
 
-    # Sửa lỗi IndentationError và Lỗi truy vấn MongoDB ($or)
+    # Sửa lỗi cú pháp truy vấn MongoDB ($or) và lỗi thụt đầu dòng
     if users_collection.find_one({'$or': [{'email': email}, {'username': username}]}):
-        # Dòng return này PHẢI được thụt vào chính xác
         return jsonify({"message": "Email hoặc Username đã được sử dụng."}), 409
 
     # Mã hóa mật khẩu
@@ -49,28 +55,35 @@ def register():
         "username": username,
         "email": email,
         "password_hash": hashed_password,
-        # Sửa lỗi datetime: dùng datetime.now() an toàn
-        "created_at": datetime.now() 
+        "created_at": datetime.now() # Đã sửa lỗi datetime
     }
 
     try:
         users_collection.insert_one(new_user)
         return jsonify({"message": "Đăng ký thành công!"}), 201
     except Exception as e:
-        # Báo lỗi để dễ dàng gỡ lỗi
-        print(f"LỖI SERVER KHI INSERT: {e}")
-        return jsonify({"message": f"Lỗi Server: {str(e)}"}), 500
+        # BÁO LỖI SERVER TRONG LOGS: Nếu lỗi 500 xảy ra, log này sẽ giúp ta tìm ra nguyên nhân
+        print(f"LỖI SERVER KHI INSERT VÀO DB: {e}")
+        return jsonify({"message": f"Lỗi Server (DB): {str(e)}"}), 500
+
 
 # --- 3. ĐIỂM CUỐI API: ĐĂNG NHẬP (LOGIN) ---
 @app.route('/api/login', methods=['POST'])
 def login():
-    data = request.get_json(force=True)
+    try:
+        # Sửa lỗi JSON: Đảm bảo nhận JSON an toàn
+        data = request.get_json(force=True)
+    except Exception as e:
+        print(f"LỖI PHÂN TÍCH JSON ĐĂNG NHẬP: {e}")
+        return jsonify({"message": "Dữ liệu gửi lên không phải JSON hợp lệ."}), 400
+
     email = data.get('email')
     password = data.get('password')
 
     if not email or not password:
         return jsonify({"message": "Thiếu Email hoặc Mật khẩu."}), 400
 
+    # LƯU Ý: Đã xóa lỗi code login bị lặp lại ở cuối file.
     user = users_collection.find_one({"email": email})
 
     # Xác thực mật khẩu
@@ -81,19 +94,6 @@ def login():
         }), 200
     else:
         return jsonify({"message": "Email hoặc Mật khẩu không chính xác."}), 401
-      route('/api/register', methods=['POST'])
-def register
-
-    user = users_collection.find_one({"email": email})
-
-    # Xác thực mật khẩu
-    if user and check_password_hash(user['password_hash'], password):
-        return jsonify({
-            "message": "Đăng nhập thành công!",
-            "username": user['username']
-        }), 200
-    else:
-
 
 # --- 4. CHẠY ỨNG DỤNG ---
 if __name__ == '__main__':
