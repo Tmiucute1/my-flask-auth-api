@@ -255,17 +255,6 @@
         </div>
     </div>
     <script>
-        // HÀM TẢI VÀ NHÚNG MODAL TỪ FILE RIÊNG
-        document.addEventListener('DOMContentLoaded', function() {
-            // Tải nội dung HTML của modal từ file riêng
-            fetch('login_register_modal_content.html')
-                .then(response => response.text())
-                .then(html => {
-                    document.getElementById('modalContainer').innerHTML = html;
-                })
-                .catch(err => console.error('Lỗi tải modal:', err));
-        });
-
         // --- CÁC HÀM XỬ LÝ CHUNG CHO MODAL ---
         function openModal(modalId) {
             const modal = document.getElementById(modalId);
@@ -318,13 +307,14 @@ window.handleRegistration = function(event) {
         return;
     }
             // --- BẮT ĐẦU: CODE GỌI API ĐĂNG KÝ MỚI ---
- method: 'POST',
+    fetch('/api/register', {  // <<< BẠN THIẾU DÒNG NÀY (Thay '/api/register' bằng link API thật của bạn)
+    method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({ username, email, password }),
-}
-.then((response) => {
+}) // <<< Đóng ngoặc cho fetch
+.then((response) => { 
     // Kiểm tra mã trạng thái HTTP trước
     if (response.ok) {
         // Xử lý khi Status là 200/201 (Thành công)
@@ -361,15 +351,14 @@ window.handleRegistration = function(event) {
             if (!email || !password) {
                 alert('Vui lòng điền đầy đủ email và mật khẩu!');
                 return;
-        }
-    =
         // BẮT ĐẦU CODE GỌI API ĐĂNG NHẬP ĐÃ SỬA LỖI
+    fetch('/api/login', { // <<< BẠN THIẾU DÒNG NÀY
     method: 'POST',
     headers: {
         'Content-Type': 'application/json'
     },
     body: JSON.stringify({ email, password }),
-}
+})
 .then((response) => {
     if (response.ok) { // KIỂM TRA STATUS 200/201 (Thành công)
         return response.json();
