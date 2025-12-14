@@ -73,15 +73,16 @@ def login():
         # Sửa lỗi JSON: Đảm bảo nhận JSON an toàn
         data = request.get_json(force=True)
     except Exception as e:
-        print(f"LỖI PHÂN TÍCH JSON ĐĂNG NHẬP: {e}")
-        return jsonify({"message": "Dữ liệu gửi lên không phải JSON hợp lệ."}), 400
+        print(f'LỖI PHÂN TÍCH JSON ĐĂNG NHẬP: {e}')
+        return jsonify({"message": "Dữ liệu gửi lên không phải JSON hợp lệ."}, 400)
 
     email = data.get('email')
     password = data.get('password')
-    
+
     if not email or not password:
         return jsonify({"message": "Thiếu Email hoặc Mật khẩu."}, 400)
 
+    # Logic tìm kiếm và xác thực phải ngang hàng với if/return ở trên
     # 1. Tìm người dùng bằng email
     user = users_collection.find_one({"email": email})
 
