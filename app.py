@@ -8,8 +8,7 @@ from flask_cors import CORS
 # --- 1. CẤU HÌNH ỨNG DỤNG FLASK VÀ MONGODB ---
 app = Flask(__name__)
 # Cho phép các yêu cầu từ Frontend (chạy trên domain khác)
-CORS(app) 
-
+CORS(app, origins=["https://flask-login-ui.onrender.com"])
 # Lấy các biến từ môi trường (RENDER sẽ cung cấp, hoặc từ .env nếu chạy cục bộ)
 app.config['MONGO_URI'] = os.environ.get('MONGO_URI')
 app.config['SECRET_KEY'] = os.environ.get('SECRET_KEY')
