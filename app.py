@@ -78,6 +78,7 @@ def login():
 
     email = data.get('email')
     password = data.get('password')
+    
     if not email or not password:
         return jsonify({"message": "Thiếu Email hoặc Mật khẩu."}, 400)
 
