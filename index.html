@@ -358,8 +358,7 @@ fetch('https://my-flask-auth-api-10.onrender.com/api/login', {
 // --- KẾT THÚC: CODE GỌI API ĐĂNG NHẬP MỚI ---
 
             // --- ĐƯỜNG DẪN TRANG ĐÍCH CỦA BẠN ---
-            const targetUrl = "file:///C:/Users/Admin/Downloads/TS%20Recommended%20Apps/BTTT2.html";
-
+        const targetUrl = "BTT2.html";
             alert(`Tạo tài khoản thành công cho: ${username}. Sẽ chuyển hướng đến trang của bạn.`);
             window.location.href = targetUrl;
         }
@@ -389,8 +388,8 @@ fetch('https://my-flask-auth-api-10.onrender.com/api/login', {
             alert(`Đăng nhập thành công với email: ${email}. Sẽ chuyển hướng đến trang của bạn.`);
         
             // Chuyển hướng thành công (Dùng URL đích của bạn)
-            window.location.href = "file:///C:/Users/Admin/Downloads/TSK20RecommendedApps/BTT2.html"; 
-        } else {
+        window.location.href = "BTT2.html";
+            } else {
             // Xử lý thất bại
             alert(`Đăng nhập thất bại: ${data.message}`);
           }
